@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack",
     "start": "node index.js",
-    "vr": "webpack && http-server -c-1 dist/"
+    "vr": "http-server -c-1 dist/",
+    "heroku-postbuild": "webpack"
   },
   "repository": {
     "type": "git",
