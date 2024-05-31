@@ -12,7 +12,7 @@ import { CannonJSPlugin } from '@babylonjs/core/Physics/Plugins/cannonJSPlugin';
 import { SkyMaterial } from '@babylonjs/materials';
 import { AdvancedDynamicTexture, StackPanel, Ellipse, Button, TextBlock, Rectangle, Control, Image } from "@babylonjs/gui";
 import { Boxer } from "./Boxer";
-import { UtilityLayerRenderer, PhysicsImpostor, Engine, Space, ExecuteCodeAction, ActionManager, TransformNode, WebXRAbstractMotionController, int, KeyboardEventTypes, SceneOptimizer, SceneOptimizerOptions, Tools, ArcRotateCamera, OimoJSPlugin, SpotLight, HemisphericLight, Scene, AnimationGroup, Vector3, Mesh, Color3, Color4, ShadowGenerator, GlowLayer, PointLight, FreeCamera, CubeTexture, Sound, PostProcess, Effect, SceneLoader, Matrix, MeshBuilder, Quaternion, AssetsManager, StandardMaterial, PBRMaterial, Material, float, Light, AbstractMesh } from "@babylonjs/core";
+import { UtilityLayerRenderer, PhysicsImpostor, UniversalCamera,Engine, Space, ExecuteCodeAction, ActionManager, TransformNode, WebXRAbstractMotionController, int, KeyboardEventTypes, SceneOptimizer, SceneOptimizerOptions, Tools, ArcRotateCamera, OimoJSPlugin, SpotLight, HemisphericLight, Scene, AnimationGroup, Vector3, Mesh, Color3, Color4, ShadowGenerator, GlowLayer, PointLight, FreeCamera, CubeTexture, Sound, PostProcess, Effect, SceneLoader, Matrix, MeshBuilder, Quaternion, AssetsManager, StandardMaterial, PBRMaterial, Material, float, Light, AbstractMesh } from "@babylonjs/core";
 import { Round } from "./Round";
 import { Boxing } from "./Boxing";
 import { Player } from "./Player";
@@ -254,6 +254,12 @@ class App {
         }
         this._scene = new Scene(this._engine);
         this._scene.enablePhysics(new Vector3(0, -9.81, 0), new CannonJSPlugin(true, 10, CANNON));
+        
+        // Appeler setupWebXR et si cela échoue, créer une caméra statique
+        this.setupWebXR().catch(() => {
+            this.createFallbackCamera();
+        });
+    
         this.main();
     }
 
@@ -285,20 +291,21 @@ class App {
         const platform = this._scene.getMeshByName('Floor_Roof_01');
         if (!platform) {
             console.error("Platform mesh not found. Cannot initialize WebXR.");
+            this.createFallbackCamera();
             return;
         }
-
+    
         try {
             this._xr = await this._scene.createDefaultXRExperienceAsync({
                 floorMeshes: [platform],
                 optionalFeatures: false,
                 disableTeleportation: true
             });
-
+    
             this._xr.baseExperience.sessionManager.onXRSessionInit.add(() => {
                 console.log("WebXR session initialized!");
             });
-
+    
             this.loadHandModels();
             this._camera = this._xr.baseExperience.camera;
             this._camera.checkCollisions = true;
@@ -308,11 +315,33 @@ class App {
             this._xr.pointerSelection.displayLaserPointer = false;
             this._xr.pointerSelection.displaySelectionMesh = false;
             this.setupPlayerBodyMesh();
-
+    
         } catch (error) {
             console.error("Error initializing WebXR:", error);
+            this.createFallbackCamera();
         }
     }
+    
+    // Méthode pour créer une caméra statique en cas d'échec de WebXR
+    private createFallbackCamera(): void {
+        const fallbackCamera = new UniversalCamera("fallbackCamera", new Vector3(0, 1.6, -10), this._scene);
+        fallbackCamera.setTarget(new Vector3(0,180,0));
+        this._scene.activeCamera = fallbackCamera;
+    
+        // Désactiver toutes les interactions
+        fallbackCamera.inputs.clear();
+    
+        // Créer un texte UI pour afficher le message
+        const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        const message = new TextBlock();
+        message.text = "Athlete simulator est un jeu VR\n veuillez visiter ce site depuis votre casque VR.\nMerci !";
+        message.color = "black";
+        message.fontSize = 75;
+        message.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        message.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        advancedTexture.addControl(message);
+    }
+
 
     // Configuration du maillage de corps du joueur
     private setupPlayerBodyMesh() {
