@@ -1463,7 +1463,7 @@ class App {
 
         //AFTER LOADING
         this._engine.hideLoadingUI();
-        this._scene.debugLayer.show();
+        //this._scene.debugLayer.show();
         this._scene.attachControl();
         this._round = new Round(this._scene, this._canvas, this._skyboxMaterial, this._fightAmbianceMusic, this._horrorAmbianceMusic);
         var light = new HemisphericLight("light", new Vector3(0, 1, 0), this._scene);
