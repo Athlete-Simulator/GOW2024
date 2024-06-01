@@ -2,10 +2,10 @@
 <br />
 <div align="center">
   <a href="https://athletesimulator-bf10928fd99f.herokuapp.com/">
-    <img src="assets/3773795.png" alt="Logo" width="200" height="200">
+    <img src="assets/AS.png" alt="Logo" width="200" height="200">
   </a>
 
-  <h1 align="center">Agonia 🌿</h1>
+  <h1 align="center">Athlete Simulator :godmode: </h1>
 
   <p align="center">
     Be green Games on web 2023
@@ -42,7 +42,6 @@
     </li>
     <li><a href="#usage">Utilisation🎮</a></li>
     <li><a href="#roadmap">Contrôles🕹️</a></li>
-    <li><a href="#contributing">Monstres🐉</a></li>
     <li><a href="#license">Quelques Spoils📸</a></li>
     <li><a href="#contact">Contact📧</a></li>
   </ol>
@@ -51,7 +50,7 @@
 
 
 
-## Histoire d'Agonia📖
+## Athlete Simulator📖
 
 <br>
 
@@ -118,54 +117,53 @@ Votre aventure dans le Lab Zone va au-delà de l'entraînement; c'est une odyss�
 
 <br>
 
-Voici un exemple de la façon dont vous pouvez donner des instructions pour configurer votre projet localement.
-Pour obtenir une copie locale et la faire fonctionner, suivez ces simples étapes.
+### Prérequis ✨
 
-### Prérequis
-Voici les éléments dont vous avez besoin pour utiliser le logiciel et comment les installer, il faut commencer par installer node.js.
-Veuillez ensuite installer le jeu en le téléchargeant à
-partir de ce repository : https://github.com/Athlete-Simulator/GOW2024
-ou en le clonant comme ci-dessous.
+Pour commencer, assurez-vous d'avoir Node.js installé sur votre machine. Ensuite, téléchargez ou clonez le projet depuis le repository :
 
-*
-   ```sh
-   git clone https://github.com/Athlete-Simulator/GOW2024.git
-   ```
+```sh
+git clone https://github.com/Athlete-Simulator/GOW2024.git
+```
 
 ### Installation 💻
 
-1. installez à présent npm dans le repository où vous avez mis les fichiers du projet
+1. Accédez au répertoire du projet :
 
-*
-  ```sh
-  npm install npm@latest -g
-  ```
-2. Installez Babylonjs
-*
-   ```sh
-   npm install babylonjs --save
-   ```
-à partir de la, la configuration devrait être prête, s'il manque
-une ou deux library pour X raison vous pouvez toujours l'installer
-
-<br>
-<br>
-
-
-
-
-## Utilisation 🎮
-
-Pour lancer le jeu, il faudra exécuter cette commande dans le terminal
-*
 ```sh
-  npm run vr
-  ```
-Vous pourrez aller à l'adresse suivante et jouer au jeu :http://localhost:8080/
+cd GOW2024
+```
 
+2. Installez les dépendances du projet :
 
+```sh
+npm install
+```
 
+3. Générez les certificats SSL nécessaires :
 
+```sh
+openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
+```
+
+4. Assurez-vous que votre casque VR est connecté au même réseau Wi-Fi que l'ordinateur sur lequel le serveur est hébergé.
+
+5. Lancez le serveur en mode VR :
+
+```sh
+npm run vr
+```
+
+6. Depuis le navigateur de votre casque VR, entrez l'adresse IP de l'ordinateur hébergeant le serveur, suivie du port 8080 (par exemple, http://192.168.1.333:8080).
+Le jeu Athlete Simulator se chargera dans votre casque VR. Utilisez les contrôles de votre casque VR pour interagir avec le jeu.
+
+### Remarques
+
+- Assurez-vous que les ports nécessaires sont ouverts sur votre pare-feu.
+- Si vous rencontrez des problèmes de connexion, vérifiez la configuration réseau de votre casque VR et de votre ordinateur.
+- Pour des performances optimales, un réseau Wi-Fi à faible latence est recommandé.
+
+<br>
+<br>
 
 
 ## Contrôles 🕹️
