@@ -43,6 +43,7 @@
     <li><a href="#usage">Utilisation🎮</a></li>
     <li><a href="#roadmap">Contrôles🕹️</a></li>
     <li><a href="#license">Quelques Spoils📸</a></li>
+    <li><a href="#details-des-jeux">Détails des Jeux 🕹️</a></li>
     <li><a href="#contact">Contact📧</a></li>
   </ol>
 </details>
@@ -54,21 +55,21 @@
 
 En 2024, alors que le monde entier attend avec impatience le grand spectacle des Jeux Olympiques de Paris, les athlètes du monde entier sont introduits à un environnement d'entraînement révolutionnaire connu sous le nom de Lab Zone. Cet espace ultramoderne n'est pas seulement un lieu d'entraînement; c'est un royaume où la technologie de pointe et l'aspiration humaine se fusionnent pour créer le terrain d'entraînement ultime pour les espoirs olympiques.
 
-### Le Lab Zone : Votre Passerelle vers la Gloire Olympique
+### Le Lab Zone : Votre Passerelle vers la Gloire Olympique 🏆
 
 Imaginez entrer dans un espace où les frontières entre le virtuel et le réel s'estompent. Le Lab Zone est équipé des dernières avancées en technologie VR, propulsée par BabylonJS 7, et améliorée avec des effets visuels époustouflants. Cet environnement immersif offre aux athlètes la chance de vivre l'intensité des Jeux Olympiques avec un réalisme inégalé.
 
-### Des Jeux Vidéo Olympiques dans le Lab Zone
+### Des Jeux Vidéo Olympiques dans le Lab Zone 🥇
 
-#### 1. Jeu de Boxe
+#### 1. Jeu de Boxe 🥊
 
 Dans le jeu de boxe du Lab Zone, vous entrez dans le ring virtuel, ressentant la tension palpable et le rugissement de la foule. Chaque coup, chaque esquive, et chaque mouvement sont reproduits avec une précision incroyable grâce à la technologie de suivi de mouvement avancée. Affrontez un adversaire redoutable et affinez vos compétences avec des entraînements spécifiques conçus pour améliorer votre vitesse, votre force et votre stratégie. Vous ne vous entraînez pas seulement pour la victoire; vous vous préparez à devenir un champion olympique.
 
-#### 2. Jeu de Canoë-Kayak
+#### 2. Jeu de Canoë-Kayak 🚣
 
 Le jeu de canoë-kayak du Lab Zone vous transporte sur la Seine de Paris pour une course palpitante contre trois adversaires en barque. Profitez d'une vue imprenable sur la Tour Eiffel tandis que vous pagayez avec détermination. La précision de votre technique et votre endurance sont mises à l'épreuve. Travaillez votre synchronisation et votre vitesse pour traverser la ligne d'arrivée en premier et revendiquer votre victoire.
 
-#### 3. Jeu de Tir Sportif
+#### 3. Jeu de Tir Sportif 🎯
 
 Dans le jeu de tir sportif du Lab Zone, la précision est essentielle. Entrez dans un stand de tir virtuel ultra-réaliste où chaque détail, du son de la détonation au recul de l'arme, est fidèlement reproduit. Commencez par un entraînement intensif où vous devez réussir 11 points pour reculer la cible à la distance officielle des épreuves olympiques. Ensuite, passez à la phase de compétition où chaque tir compte : cinq tirs sont comptabilisés, avec un point vert pour chaque réussite et un point rouge pour chaque échec. Affinez votre visée et votre concentration pour atteindre la perfection.
 
@@ -95,12 +96,8 @@ Votre aventure dans le Lab Zone va au-delà de l'entraînement; c'est une odyss�
 * <img src="assets/heroku.png" alt="heroku" width="120" name = "heroku"/>
 
 
-
-
 <br>
 <br>
-
-
 
 
 ## Pour commencer 🚀
@@ -194,6 +191,75 @@ Le jeu Athlete Simulator se chargera dans votre casque VR. Utilisez les contrôl
 <br>
 
 <img src="assets/screen6.png" alt="screen6" width="100%" name = "screen6"/>
+
+
+## Détails des Jeux 🕹️
+
+### Lab Zone - Votre Environnement Virtuel 🌐
+
+À votre arrivée dans le Lab Zone, vous aurez le choix entre trois jeux différents : la boxe 🥊, le canoë-kayak 🚣 et le tir sportif 🎯. Chacun de ces jeux est conçu pour offrir une expérience immersive et réaliste, vous permettant de vous entraîner comme un véritable athlète olympique.
+
+### 1. Jeu de Boxe 🥊
+
+#### Description 📜
+
+Dans le jeu de boxe, vous vous retrouvez directement dans une arène de boxe virtuelle. Vous devrez prendre les escaliers pour entrer dans l'hexagone central, où vous affronterez Tony Shanks, un adversaire redoutable.
+
+#### Objectif 🎯
+
+Votre objectif est de réduire les points de vie (HP) de Tony Shanks de 100 à 0 en évitant ses gants et en frappant son corps. Chaque coup de poing réussi inflige 10 dégâts. Tony peut tomber K.O lorsqu'il a moins de 20 HP, mais il peut aussi se relever, ajoutant un défi supplémentaire.
+
+#### Règles et Particularités 📋
+
+- **HP de Tony Shanks**: Tony Shanks commence avec 100 HP et prend 10 dégâts par coup de poing touché.
+- **Stratégie de défense**: Il peut se protéger avec ses gants, donc vous devez viser stratégiquement pour éviter ses parades.
+- **Immunité K.O**: Vous ne pouvez pas tomber K.O, ce qui permet un entraînement sans risque et vous encourage à continuer à vous battre.
+- **Retour automatique**: Si vous touchez les fils du ring, vous serez ramené à l'intérieur, empêchant toute fuite.
+- **Accès au ring**: Prendre les escaliers pour monter dans le ring.
+- **Redémarrage du jeu**: Après la fin du match, il est nécessaire de relancer le jeu pour rejouer en raison d'un bug actuel.
+
+![Carte de la boxe](assets/carte2.png)
+
+### 2. Jeu de Canoë-Kayak 🚣
+
+#### Description 📜
+
+Le jeu de canoë-kayak vous transporte sur la Seine, près de la Tour Eiffel, pour une course palpitante contre des adversaires virtuels appelés "Titan Modl".
+
+#### Objectif 🎯
+
+Votre but est de passer sous le dernier pont à côté de la Tour Eiffel pour gagner la course.
+
+#### Règles et Particularités 📋
+
+- **Vitesse des adversaires**: Les adversaires, Titan Modl, ont une vitesse variable de 6 à 18 km/h et une endurance illimitée.
+- **Gestion du cardio**: Vous devez gérer votre cardio et l'endurance de vos épaules pour maintenir une performance optimale tout au long de la course.
+- **Contrôle du kayak**: Ramer à droite fait tourner le kayak à gauche et vice versa, demandant une coordination précise.
+- **Suivi de la position**: Utilisez le HUD pour suivre votre position par rapport aux adversaires et ajuster votre stratégie en conséquence.
+
+![Carte du kayak](assets/carte1.png)
+
+### 3. Jeu de Tir Sportif 🎯
+
+#### Description 📜
+
+Dans le jeu de tir sportif, la précision est essentielle. Vous entrez dans un stand de tir virtuel où chaque détail est reproduit avec une grande fidélité.
+
+#### Objectif 🎯
+
+L'objectif initial est de toucher 11 fois le centre rouge de la cible. Une fois cela accompli, vous devez réussir les 5 tirs suivants pour obtenir le meilleur score possible.
+
+#### Règles et Particularités 📋
+
+- **Temps limité**: Vous avez 180 secondes pour terminer la session, ajoutant une pression supplémentaire à chaque tir.
+- **Cible initiale**: Vous devez toucher 11 fois le centre rouge de la cible pour avancer à l'étape suivante.
+- **Scoring avancé**: Après avoir atteint l'objectif initial (score 11/11), chaque tir supplémentaire rapporte un point vert ou rouge.
+- **Indicateurs HUD**: Vous pouvez suivre votre avancement depuis le HUD, vous indiquant votre progression et votre score.
+- **Recharge illimitée**: Les chargeurs sont illimités et apparaissent sur la table une fois que vous avez épuisé les balles, vous permettant de vous concentrer sur votre précision sans interruption.
+
+![Carte du tir sportif](assets/carte3.png)
+
+---
 
 
 <!-- CONTACT -->
