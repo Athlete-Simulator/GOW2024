@@ -2,15 +2,15 @@
 <br />
 <div align="center">
   <a href="https://athletesimulator-bf10928fd99f.herokuapp.com/">
-    <img src="assets/AS.png" alt="Logo" width="200" height="200">
+    <img src="assets/AS.png" alt="Logo" width="300" height="300">
   </a>
 
-  <h1 align="center">Athlete Simulator :godmode: </h1>
+  <h1 align="center">Athlete Simulator</h1>
 
   <p align="center">
-    Be green Games on web 2023
+    Games on web 2024 Olympic edition
     <br />
-    <a href="https://www.youtube.com/watch?v=1c3iP3AXuo0"><strong>Vidéo démo 🎬»</strong></a>
+    <a href="https://youtu.be/k0ebpO5Bg98"><strong>Vidéo démo 🎬»</strong></a>
     <br />
     <br />
     <a href="https://athletesimulator-bf10928fd99f.herokuapp.com/">🎮Tester le jeu</a>
@@ -48,14 +48,7 @@
 </details>
 
 
-
-
 ## Athlete Simulator📖
-
-<br>
-
-
-## Athlete Simulator: Les Chroniques du Lab Zone
 
 ### Bienvenue dans le Lab Zone
 
@@ -88,10 +81,7 @@ Votre aventure dans le Lab Zone va au-delà de l'entraînement; c'est une odyss�
 <br>
 
 
-
 ### Développé à l'aide de 🛠️ :
-
-
 
 
 * <img src="assets/babylon.png" alt="babylon" width="120" name = "babylon"/>
@@ -201,10 +191,15 @@ Le jeu Athlete Simulator se chargera dans votre casque VR. Utilisez les contrôl
 
 <img src="assets/screen5.png" alt="screen5" width="100%" name = "screen5"/>
 
+<br>
+
+<img src="assets/screen6.png" alt="screen6" width="100%" name = "screen6"/>
+
+
 <!-- CONTACT -->
 ## Contact 📧
 
-Adem BenJabria - Adem.bj@gmail.com
+Adem BenJabria - Adem.bj@gmail.com - https://adem-benjabria.fr 
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 <br>
@@ -228,7 +223,6 @@ Merci d'avoir porté attention à mon projet ! 👍
 [license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/adem-ben-jabria-532395221/
-[linkedin-url2]: https://www.linkedin.com/in/valentin-charles-9264531b7/
 [product-screenshot]: images/screenshot.png
 [Node.js]: https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white
 [Node-url]: https://nodejs.org/
