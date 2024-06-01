@@ -15,7 +15,7 @@ export class EiffelTower {
             this._eiffelTowerMesh = result.meshes[0];
             this._eiffelTowerMesh.name = "EiffelTower"; // Nommer le maillage pour une identification facile
             this._eiffelTowerMesh.scaling = new Vector3(8, 8, 8); // Échelle du modèle
-            this._eiffelTowerMesh.position = new Vector3(425, 1, 56); // Position initiale du modèle
+            this._eiffelTowerMesh.position = new Vector3(330, 1, 56); // Position initiale du modèle
 
             // Initialiser la rotation si nécessaire
             this._eiffelTowerMesh.rotationQuaternion = Quaternion.FromEulerAngles(
@@ -33,5 +33,11 @@ export class EiffelTower {
     // Méthode pour obtenir le maillage de la Tour Eiffel
     public getEiffelTowerMesh(): AbstractMesh {
         return this._eiffelTowerMesh;
+    }
+
+    public dispose(): void {
+        if (this._eiffelTowerMesh) {
+            this._eiffelTowerMesh.dispose();
+        }
     }
 }

@@ -1,4 +1,4 @@
-import { Scene, Animation, TransformNode, StandardMaterial, Color3, MeshBuilder, ActionManager, Vector3, Mesh, SceneLoader, AbstractMesh } from "@babylonjs/core";
+import { Scene, AbstractMesh, SceneLoader } from "@babylonjs/core";
 
 export class Kayak {
     private _scene: Scene;
@@ -37,5 +37,12 @@ export class Kayak {
         return this._kayakMeshes;
     }
 
-    
+    public dispose(): void {
+        this._kayakMeshes.forEach(mesh => {
+            mesh.setEnabled(false); // Désactiver le maillage
+            mesh.dispose(); // Libérer les ressources du maillage
+        });
+        this._kayakMeshes = []; // Réinitialiser la liste des maillages
+        console.log("Kayak disposed successfully.");
+    }
 }

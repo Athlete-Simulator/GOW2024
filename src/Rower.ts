@@ -65,4 +65,10 @@ export class Rower {
     public getPosition(): Vector3 {
         return this._rowerMesh ? this._rowerMesh.position : Vector3.Zero();
     }
+
+    public disposeRower(): void {
+        if (this._rowerMesh) {
+            this._rowerMesh.dispose();
+        }
+    }
 }

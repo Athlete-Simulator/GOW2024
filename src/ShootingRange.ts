@@ -105,6 +105,13 @@ export class ShootingRange {
             this._isAnimating = false;
         });
     }
+
+    public disposeRange(): void {
+        this._rangeMeshes.forEach(mesh => {
+            mesh.dispose();
+        });
+        this._rangeMeshes = [];
+    }
     
     
 }

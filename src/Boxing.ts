@@ -7,12 +7,14 @@ export class Boxing {
     private _canvas: HTMLCanvasElement; // Canvas HTML pour le rendu
     private _engine: Engine; // Moteur de rendu
     private _camera: WebXRCamera; // Caméra WebXR
+    private _meshes: AbstractMesh[]; // Array to hold all meshes
 
     constructor(scene: Scene, canvas: HTMLCanvasElement, engine: Engine, camera: WebXRCamera) {
         this._scene = scene;
         this._canvas = canvas;
         this._engine = engine;
         this._camera = camera; // Initialisation de la caméra
+        this._meshes = []; // Initialize the meshes array
         this.createMapAndDisplayLoading(); // Création de la carte et affichage de l'interface de chargement
     }
 
@@ -22,9 +24,10 @@ export class Boxing {
         let env = result.meshes[0];
         let allMeshes = env.getChildMeshes();
 
-        // Activation des collisions pour tous les maillages
+        // Activation des collisions pour tous les maillages et ajout à _meshes
         allMeshes.forEach(mesh => {
             mesh.checkCollisions = true;
+            this._meshes.push(mesh); // Ajout du maillage à _meshes
         });
     }
 
@@ -34,5 +37,12 @@ export class Boxing {
         await this.createMapBoxing(); // Crée la carte de boxe
         await this._scene.whenReadyAsync(); // Attend que la scène soit prête
         this._engine.hideLoadingUI(); // Cache l'interface de chargement
+    }
+
+    public dispose(): void {
+        this._meshes.forEach(mesh => {
+            mesh.dispose();
+        });
+        this._meshes = [];
     }
 }

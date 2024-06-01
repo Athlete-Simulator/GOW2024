@@ -5,12 +5,10 @@ export class Canoe {
     private _scene: Scene; // Scène de la simulation
     private _camera: WebXRCamera; // Caméra WebXR
     private _canoeMesh: AbstractMesh; // Maillage du canoë
-    private _paddle: Paddle; // Pagaie utilisée pour déplacer le canoë
 
-    constructor(scene: Scene, camera: WebXRCamera, paddle: Paddle) {
+    constructor(scene: Scene, camera: WebXRCamera) {
         this._scene = scene;
         this._camera = camera;
-        this._paddle = paddle;
     }
 
     // Méthode pour charger le modèle 3D du canoë
@@ -48,5 +46,11 @@ export class Canoe {
     // Méthode pour mettre à jour le canoë (appelée à chaque frame)
     public update(): void {
         this.updateCanoePosition();
+    }
+
+    public disposeCanoe(): void {
+        if (this._canoeMesh) {
+            this._canoeMesh.dispose();
+        }
     }
 }

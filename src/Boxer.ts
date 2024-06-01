@@ -17,6 +17,10 @@ export class Boxer {
     public velocity: float = 10; // Vitesse de déplacement du boxeur
     public cooldownTimeStun: float; // Temps de recharge après une étourdissement
     private player: Player; // Référence au joueur
+    private _damageCooldown: boolean = false; // Ajout du cooldown pour les dégâts
+    public _isKO: boolean = false; // Variable pour suivre l'état KO
+    public _boxerMesh: AbstractMesh;
+
 
     // Définition des différents états possibles du boxeur
     public static State = {
@@ -67,12 +71,13 @@ export class Boxer {
 
     // Méthode pour initialiser le boxeur en chargeant son modèle
     public async initializeBoxer(): Promise<void> {
-        const result = await SceneLoader.ImportMeshAsync("", "./models/", "Boxer.glb", this.scene);
-        let env = result.meshes[0];
-        env.checkCollisions = true;
-        env.position = new Vector3(4.8, 0.74, 35.1);
-        env.scaling = new Vector3(1.5, 1.5, 1.5);
-        env.name = this.name;
+        const result = await SceneLoader.ImportMeshAsync("", "./models/", "boxer.glb", this.scene);
+        this._boxerMesh = result.meshes[0];
+        this._boxerMesh.name = this.name;
+        this._boxerMesh.checkCollisions = true;
+        this._boxerMesh.position = new Vector3(4.8, 0.74, 35.1);
+        this._boxerMesh.scaling = new Vector3(1.5, 1.5, 1.5);
+        this._boxerMesh.name = this.name;
     }
 
     // Méthode pour charger les animations associées aux états du boxeur
@@ -129,13 +134,11 @@ export class Boxer {
     public changeState(newState: string, damage: number = 0, hand: string = '') {
         console.log(`Attempting to change state from ${this.currentState} to ${newState}, currently invulnerable: ${this.isInvulnerable}`);
 
-        // Vérifie si la transition d'état est valide
         if (!this.isValidTransition(this.currentState, newState)) {
             console.log("State change blocked due to ongoing recovery process.");
             return;
         }
 
-        // Vérifie si le boxeur est déjà dans le nouvel état
         if (this.currentState === newState) {
             console.log("Already in the state.");
             return;
@@ -147,47 +150,46 @@ export class Boxer {
             return;
         }
 
-        // Arrête l'animation de l'état actuel si elle diffère du nouvel état
         if (this.animations[this.currentState] && this.currentState !== newState) {
             this.animations[this.currentState].stop();
         }
 
         if (damage > 0) {
-            this.receiveDamage(damage, hand); // Applique les dégâts si présents
+            this.receiveDamage(damage);
         }
 
-        this.currentState = newState; // Met à jour l'état actuel
-        anim.loopAnimation = this.shouldLoop(newState); // Détermine si l'animation doit boucler
+        this.currentState = newState;
+        anim.loopAnimation = this.shouldLoop(newState);
         anim.onAnimationEndObservable.clear();
 
-        anim.start(anim.loopAnimation); // Démarre l'animation
+        anim.start(anim.loopAnimation);
         anim.onAnimationGroupPlayObservable.addOnce(() => {
             this.isInvulnerable = this.determineInvulnerability(newState);
             console.log(`State changed to ${newState}, invulnerability set to ${this.isInvulnerable}.`);
             if (newState.includes("Punch") || newState.includes("Jab")) {
-                // Le boxeur commence une attaque, rend le joueur vulnérable
                 this.player.isInvulnerable = false;
                 console.log("Player should be vulnerable now!");
             }
         });
 
-        // Gestion de la fin de l'animation
         anim.onAnimationEndObservable.addOnce(() => {
-            if (newState === Boxer.State.KNOCKED_OUT_BACK) {
-                console.log(`Animation for knockedOutBack completed, transitioning to gettingUpBack.`);
-                this.changeState(Boxer.State.GETTING_UP_BACK);
-            } else if (newState === Boxer.State.KNOCKED_OUT_FRONT) {
-                console.log(`Animation for knockedOutBack completed, transitioning to gettingUpBack.`);
-                this.changeState(Boxer.State.GETTING_UP_FRONT);
-            } else if (newState === Boxer.State.GETTING_UP_BACK) {
-                console.log(`Animation for gettingUpBack completed, transitioning to IDLE and becoming vulnerable.`);
-                this.isInvulnerable = false;
-                this.changeState(Boxer.State.IDLE);
-            } else {
-                this.player.isInvulnerable = true;
-                this.isInvulnerable = false;
-                console.log(`Animation ${newState} completed, transitioning to IDLE.`);
-                this.changeState(Boxer.State.IDLE);
+            if (this.health > 0) {
+                if (newState === Boxer.State.KNOCKED_OUT_BACK) {
+                    console.log(`Animation for knockedOutBack completed, transitioning to gettingUpBack.`);
+                    this.changeState(Boxer.State.GETTING_UP_BACK);
+                } else if (newState === Boxer.State.KNOCKED_OUT_FRONT) {
+                    console.log(`Animation for knockedOutFront completed, transitioning to gettingUpFront.`);
+                    this.changeState(Boxer.State.GETTING_UP_FRONT);
+                } else if ([Boxer.State.GETTING_UP_BACK, Boxer.State.GETTING_UP_FRONT].includes(newState)) {
+                    console.log(`Animation for gettingUp completed, transitioning to IDLE and becoming vulnerable.`);
+                    this.isInvulnerable = false;
+                    this.changeState(Boxer.State.IDLE);
+                } else {
+                    this.player.isInvulnerable = true;
+                    this.isInvulnerable = false;
+                    console.log(`Animation ${newState} completed, transitioning to IDLE.`);
+                    this.changeState(Boxer.State.IDLE);
+                }
             }
         });
     }
@@ -205,14 +207,13 @@ export class Boxer {
 
     // Méthode pour déterminer si le boxeur doit être invulnérable dans l'état donné
     private determineInvulnerability(state: string): boolean {
-        if (state === Boxer.State.IDLE) {
-            return false; // Explicitement vulnérable 
-        }
         switch (state) {
             case Boxer.State.BLOCK:
             case Boxer.State.DYING:
             case Boxer.State.KNOCKED_OUT_BACK:
+            case Boxer.State.KNOCKED_OUT_FRONT:
             case Boxer.State.GETTING_UP_BACK:
+            case Boxer.State.GETTING_UP_FRONT:
             case Boxer.State.HIT_REACTION_STOMACH:
             case Boxer.State.RECEIVE_STOMACH_LEFT:
             case Boxer.State.RECEIVE_STOMACH_RIGHT:
@@ -224,17 +225,62 @@ export class Boxer {
         }
     }
 
+    // Méthode pour arrêter le mouvement et le regard du boxeur
+    public stopMovementAndLookAt() {
+        if (this.health > 0) {
+            this._isKO = true;
+            this.isInvulnerable = true;
+            this.velocity = 0;
+            setTimeout(() => {
+                this.resumeMovement();
+                this._isKO = false;
+            }, 12000); // Cooldown de 12 secondes
+        }
+        else {
+            this._isKO = true;
+            this.isInvulnerable = true;
+            this.velocity = 0;
+        }
+    }
+
+    // Méthode pour reprendre le mouvement du boxeur
+    public resumeMovement() {
+        this.velocity = 0.03;
+    }
+
     // Méthode pour gérer les dégâts reçus par le boxeur
-    public receiveDamage(damage, hand) {
-        if (this.isInvulnerable) {
-            console.log("Attack blocked: Boxer is invulnerable.");
-            return;
+    public receiveDamage(damage: number) {
+        if (this._damageCooldown) {
+            return; // Si en cooldown, ne pas appliquer de dégâts
         }
-        if (hand === "right") {
-            damage *= 2; // Double les dégâts si le coup provient de la main droite
-        }
+
         this.health -= damage;
-        console.log(`Damage received: ${damage}, Current health: ${this.health}`);
+        if (this.health <= 0) {
+            this.health = 0;
+            this.changeState(Boxer.State.KNOCKED_OUT_BACK);
+            this.velocity = 0; // Arrêter le mouvement du boxeur
+        } else {
+            this._damageCooldown = true;
+            setTimeout(() => {
+                this._damageCooldown = false;
+            }, 1000); // Cooldown de 1 seconde
+        }
+    }
+
+    public dispose(): void {
+        // Dispose the mesh
+        if (this._boxerMesh) {
+            this._boxerMesh.dispose();
+        }
+
+        // Dispose all animations
+        for (const key in this.animations) {
+            if (this.animations[key]) {
+                this.animations[key].dispose();
+            }
+        }
+
+        console.log(`Boxer ${this.name} has been disposed.`);
     }
 
     // Méthode pour déterminer si une animation doit boucler en fonction de l'état

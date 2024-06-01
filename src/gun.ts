@@ -1,4 +1,4 @@
-import { Scene, Mesh, Ray, Sound, PointParticleEmitter, Color4, ParticleSystem, Animation, Texture, PointLight, RayHelper, StandardMaterial, Color3, Vector3, Tools, AbstractMesh, PhysicsImpostor, ActionManager, ExecuteCodeAction, MeshBuilder, SceneLoader, TransformNode, Quaternion } from "@babylonjs/core";
+import { Scene, Mesh, Ray, Sound, AnimationGroup,PointParticleEmitter, Color4, ParticleSystem, Animation, Texture, PointLight, RayHelper, StandardMaterial, Color3, Vector3, Tools, AbstractMesh, PhysicsImpostor, ActionManager, ExecuteCodeAction, MeshBuilder, SceneLoader, TransformNode, Quaternion } from "@babylonjs/core";
 import { ShootingRange } from "./ShootingRange";
 import { AdvancedDynamicTexture, Control, TextBlock, Ellipse } from "@babylonjs/gui";
 
@@ -16,26 +16,20 @@ export class Gun {
     private _lastShotTime: number = 0; // Indicateur pour vérifier le temps du dernier tir
     private _shootCooldown: number = 200; // Délai entre les tirs en millisecondes
     private _muzzleSmoke: ParticleSystem;
-
-
     private _reloadSound: Sound;
     private _fireSound: Sound;
-
     private _yesLogo: Mesh;
     private _noLogo: Mesh;
-
     private _score: number = 0;
     private _timeLeft: number = 180; // 180 secondes pour le jeu
     private _scoreText: TextBlock;
     private _isGameOver: boolean = false;
     private _timerInterval: number;
-
     public _homeButtonMesh: Mesh;
     public _wristUIPlane: Mesh;
     private _timeText: TextBlock;
     private _ammoText: TextBlock;
     private _endGameMessageText: TextBlock;
-
     private _extraShotsLeft: number = 5; // Nombre de tirs supplémentaires
     public _hudPoints: Mesh[] = []; // Liste des points rouges et verts sur le HUD du poignet
     private _muzzleFlame: ParticleSystem;
@@ -57,8 +51,7 @@ export class Gun {
         this._extraShotPoints = []; // Initialiser le tableau des points supplémentaires
     }
 
-    public _setHUDReferences(homeButtonMesh: Mesh, wristUIPlane: Mesh, scoreText: TextBlock, timeText: TextBlock, ammoText: TextBlock, endGameMessageText: TextBlock, extraShotPoints: Ellipse[]): void {
-        this._homeButtonMesh = homeButtonMesh;
+    public _setHUDReferences(wristUIPlane: Mesh, scoreText: TextBlock, timeText: TextBlock, ammoText: TextBlock, endGameMessageText: TextBlock, extraShotPoints: Ellipse[]): void {
         this._wristUIPlane = wristUIPlane;
         this._scoreText = scoreText;
         this._timeText = timeText;
@@ -67,21 +60,19 @@ export class Gun {
         this._extraShotPoints = extraShotPoints; // Ajouter cette ligne
     }
 
-
-
     private _loadSounds(): void {
         this._reloadSound = new Sound("reloadSound", "./sounds/m9Reload.mp3", this._scene, null, { loop: false, autoplay: false });
         this._fireSound = new Sound("fireSound", "./sounds/m9Fire.mp3", this._scene, null, { loop: false, autoplay: false });
         this.gunSound = new Sound("gunSound", "sounds/gunSound.mp3", this._scene, null, { loop: true, autoplay: false });
         this.emptySound = new Sound("emptySound", "sounds/emptyammo.mp3", this._scene, null, { loop: false, autoplay: false });
-        this.gunSound.setVolume(0.2);
+        this.gunSound.setVolume(0.0);
     }
 
     public async loadGunModel(): Promise<void> {
         // Charger le modèle de gun
         const result = await SceneLoader.ImportMeshAsync("", "./models/", "gun.glb", this._scene);
         this._gunMesh = result.meshes[0];
-        this._gunMesh.name = "Gun";
+        this._gunMesh.name = "gun";
 
         // Redimensionner le modèle pour l'adapter à la taille souhaitée
         this._gunMesh.scaling = new Vector3(1, 1, 1);
@@ -105,6 +96,8 @@ export class Gun {
 
     public spawnGun(position: Vector3): void {
         if (this._gunMesh) {
+            const anim = this._scene.getAnimationGroupByName("M9Hammer")
+            anim.stop();
             this._gunMesh.position = position;
             this._gunMesh.rotationQuaternion = Quaternion.FromEulerAngles(
                 Tools.ToRadians(90),
@@ -184,7 +177,6 @@ export class Gun {
         }
     }
 
-
     public shoot(): void {
         const currentTime = Date.now();
         if (currentTime - this._lastShotTime < this._shootCooldown) {
@@ -258,27 +250,30 @@ export class Gun {
         this._recoilGun();
     }
 
-
     // Méthode pour activer et positionner la flamme et le flash de tir
     private _activateMuzzleEffects(start: Vector3, forward: Vector3): void {
+        // Ajouter un léger décalage vers la droite
+        const leftOffset = new Vector3(0, 0, -0.008); 
+    
         // Positionner et activer la flamme du canon
-        this._muzzleFlame.emitter = start.add(forward.scale(0.01)); // Positionner légèrement devant le canon
+        this._muzzleFlame.emitter = start.add(forward.scale(0.01)).add(leftOffset); // Positionner légèrement devant le canon
         this._muzzleFlame.start();
-
+    
         // Activer la lumière du flash du canon
-        this._muzzleFlashLight.position = start;
+        this._muzzleFlashLight.position = start.add(leftOffset);
         this._muzzleFlashLight.intensity = 4;
-
+    
         // Activer les particules de fumée
-        this._muzzleSmoke.emitter = start.add(forward.scale(0.03)); // Positionner légèrement devant le canon
+        this._muzzleSmoke.emitter = start.add(forward.scale(0.03)).add(leftOffset); // Positionner légèrement devant le canon
         this._muzzleSmoke.start();
-
+    
         setTimeout(() => {
             this._muzzleFlame.stop();
             this._muzzleFlashLight.intensity = 0;
             this._muzzleSmoke.stop();
         }, 100); // La flamme, la lumière et la fumée disparaissent après 100 ms
     }
+    
 
 
     // Méthode pour jouer l'animation de recul de l'arme
@@ -302,7 +297,6 @@ export class Gun {
             hammerAnimation.start(true, 1.0, hammerAnimation.from, hammerAnimation.to, false);
         }
     }
-
 
     public updateScore(score: number): void {
         if (this._scoreText) {
@@ -338,8 +332,6 @@ export class Gun {
             impact.dispose();
         }, 500); // L'impact disparaît après 1 seconde
     }
-
-
 
 
     public _createValidationLogos(): void {
@@ -578,5 +570,15 @@ export class Gun {
         this._muzzleSmoke.stop();
     }
 
-
+    
+    public dispose(): void {
+            if (this._gunMesh) {
+                this._gunMesh.dispose();
+            }
+            if(this._magazineMesh){
+                this._magazineMesh.dispose();
+            }
+    }
 }
+
+

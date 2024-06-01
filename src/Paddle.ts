@@ -90,4 +90,11 @@ export class Paddle {
         this._previousRotation = currentRotation;
         return rotationDifference > 0.05; // marge d'erreur
     }
+
+    public disposePaddle(): void {
+        if (this._paddleMesh) {
+            this._paddleMesh.dispose();
+        }
+    }
+    
 }
