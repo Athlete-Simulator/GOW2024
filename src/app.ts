@@ -1111,6 +1111,7 @@ class App {
         this.teleportableBoxing = false;
         this.teleportableRing = false;
         this.teleportableShootingRange = false;
+        this._boxer.dispose();
         this.homeSound.stop();
         this.kayakSound.play();
         this.map.forEach(mesh => mesh.setEnabled(false));
