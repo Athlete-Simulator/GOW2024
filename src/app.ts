@@ -388,7 +388,7 @@ class App {
         }
 
         if (vrSupported) {
-            message.text = "Activez le son en haut à gauche\nCliquez sur le bouton \nen bas à droite \npour entrer dans le \nLab Zone.";
+            message.text = "Activez le son en haut à gauche\nCliquez sur le bouton \nen bas à droite \npour entrer dans le \nLab Zone.\nLe bouton volume va apparaitre dans 5 secondes";
         } else {
             message.text = "Athlete simulator est un jeu VR\n veuillez visiter ce site depuis votre casque VR.\nMerci !";
         }
@@ -1511,9 +1511,8 @@ class App {
 
         //AFTER LOADING
 
-        setTimeout(() => {
-            this._engine.hideLoadingUI();
-        }, 1000);
+        this._engine.hideLoadingUI();
+
         //this._scene.debugLayer.show();
         //this._scene.attachControl();
         this._round = new Round(this._scene, this._canvas, this._skyboxMaterial);
