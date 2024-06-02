@@ -857,7 +857,7 @@ class App {
         setTimeout(() => {
             magazineMesh.setEnabled(false); // Masquer le chargeur
             this.leftHandNode.getChildMeshes().forEach(mesh => mesh.setEnabled(true)); // Réactiver la main gauche
-        }, 1000); // Délai de 0.2 secondes avant de masquer le chargeur et de réactiver la main gauche
+        }, 1000); // Délai de 1 seconde avant de masquer le chargeur et de réactiver la main gauche
     }
 
     // Méthode pour configurer les événements du contrôleur gauche
@@ -1421,7 +1421,7 @@ class App {
             });
 
             this.walkSound = new Sound("walkingSound", "sounds/walk.mp3", this._scene, null, {
-                loop: false,
+                loop: true,
                 autoplay: false,
                 volume: 1
             });
@@ -1510,9 +1510,12 @@ class App {
         await this._scene.whenReadyAsync();
 
         //AFTER LOADING
-        this._engine.hideLoadingUI();
+
+        setTimeout(() => {
+            this._engine.hideLoadingUI();
+        }, 1000);
         //this._scene.debugLayer.show();
-        this._scene.attachControl();
+        //this._scene.attachControl();
         this._round = new Round(this._scene, this._canvas, this._skyboxMaterial);
         var light = new HemisphericLight("light", new Vector3(0, 1, 0), this._scene);
         this.day();

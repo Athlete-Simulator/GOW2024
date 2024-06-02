@@ -65,7 +65,7 @@ export class Gun {
         this._fireSound = new Sound("fireSound", "./sounds/m9Fire.mp3", this._scene, null, { loop: false, autoplay: false });
         this.gunSound = new Sound("gunSound", "sounds/gunSound.mp3", this._scene, null, { loop: true, autoplay: false });
         this.emptySound = new Sound("emptySound", "sounds/emptyammo.mp3", this._scene, null, { loop: false, autoplay: false });
-        this.gunSound.setVolume(0.0);
+        this.gunSound.setVolume(0.3);
     }
 
     public async loadGunModel(): Promise<void> {
