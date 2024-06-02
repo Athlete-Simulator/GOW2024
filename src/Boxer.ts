@@ -71,7 +71,7 @@ export class Boxer {
 
     // Méthode pour initialiser le boxeur en chargeant son modèle
     public async initializeBoxer(): Promise<void> {
-        const result = await SceneLoader.ImportMeshAsync("", "./models/", "boxer.glb", this.scene);
+        const result = await SceneLoader.ImportMeshAsync("", "./models/", "Boxer.glb", this.scene);
         this._boxerMesh = result.meshes[0];
         this._boxerMesh.name = this.name;
         this._boxerMesh.checkCollisions = true;

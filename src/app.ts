@@ -36,8 +36,6 @@ class App {
     private _engine: Engine;
     private _Boxervelocity: float;
     private _skyboxMaterial: SkyMaterial;
-    private _fightAmbianceMusic: Sound;
-    private _horrorAmbianceMusic: Sound;
     private _round: Round;
     public cpt2: number = 9999;
 
@@ -60,6 +58,7 @@ class App {
     private swordHoldingPositionAnimationL: AnimationGroup;
     private indicatingPoseLAnimation: AnimationGroup;
     private indicatingPoseRAnimation: AnimationGroup;
+    private homeSound: Sound;
     private kayakSound: Sound;
     private boxerSound: Sound;
     private walkSound: Sound;
@@ -347,7 +346,8 @@ class App {
             this._camera.checkCollisions = true;
             this._camera.applyGravity = true;
             this._camera.ellipsoid = new Vector3(1, 1, 1);
-            this._camera.position = new Vector3(-11.11, 0.5, 45.66);
+            this._camera.position = new Vector3(-10, 0.5, 52.5);
+            this._camera.target = new Vector3(-10, 1.75, 51.5);
 
             // Désactivez l'UniversalCamera si elle existe
             const fallbackCamera = this._scene.getCameraByName("fallbackCamera");
@@ -388,7 +388,7 @@ class App {
         }
 
         if (vrSupported) {
-            message.text = "Cliquez sur le bouton \nen bas à droite \npour entrer dans le \nLab Zone.";
+            message.text = "Activez le son en haut à gauche\nCliquez sur le bouton \nen bas à droite \npour entrer dans le \nLab Zone.";
         } else {
             message.text = "Athlete simulator est un jeu VR\n veuillez visiter ce site depuis votre casque VR.\nMerci !";
         }
@@ -399,8 +399,6 @@ class App {
         message.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         this._fallbackUI.addControl(message);
     }
-
-
 
 
     // Configuration du maillage de corps du joueur
@@ -1113,6 +1111,7 @@ class App {
         this.teleportableBoxing = false;
         this.teleportableRing = false;
         this.teleportableShootingRange = false;
+        this.homeSound.stop();
         this.kayakSound.play();
         this.map.forEach(mesh => mesh.setEnabled(false));
 
@@ -1275,6 +1274,7 @@ class App {
         this.teleportableShootingRange = false;
         // Désactiver la carte actuelle
         this.map.forEach(mesh => mesh.setEnabled(false));
+        this.homeSound.stop();
         this._gun.gunSound.play();
 
         // Créer et afficher le stand de tir
@@ -1327,6 +1327,7 @@ class App {
         this.teleportableBoxing = false;
         this.teleportableRing = true;
         this.teleportableShootingRange = false;
+        this.homeSound.stop();
         this.boxerSound.play();
         this.map.forEach(mesh => mesh.setEnabled(false));
         this._boxing = new Boxing(this._scene, this._canvas, this._engine, this._camera);
@@ -1407,7 +1408,6 @@ class App {
 
             this.map = allMeshes;
 
-
             this.kayakSound = new Sound("kayakSound", "sounds/kayak.mp3", this._scene, null, {
                 loop: true,
                 autoplay: false,
@@ -1424,6 +1424,12 @@ class App {
                 loop: false,
                 autoplay: false,
                 volume: 1
+            });
+
+            this.homeSound = new Sound("homeSound", "sounds/home.mp3", this._scene, null, {
+                loop: true,
+                autoplay: true,
+                volume: 0.1
             });
 
             // Sky material and mesh setup...
@@ -1507,7 +1513,7 @@ class App {
         this._engine.hideLoadingUI();
         //this._scene.debugLayer.show();
         this._scene.attachControl();
-        this._round = new Round(this._scene, this._canvas, this._skyboxMaterial, this._fightAmbianceMusic, this._horrorAmbianceMusic);
+        this._round = new Round(this._scene, this._canvas, this._skyboxMaterial);
         var light = new HemisphericLight("light", new Vector3(0, 1, 0), this._scene);
         this.day();
         const guiGame = AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -1530,6 +1536,9 @@ class App {
         }
         if (this._gun.gunSound && this._gun.gunSound.isPlaying) {
             this._gun.gunSound.stop();
+        }
+        if (this.homeSound && !this.homeSound.isPlaying) {
+            this.homeSound.play();
         }
         // Dispose the current map if any
         if (this.inShootingRange) {
