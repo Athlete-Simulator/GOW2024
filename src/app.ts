@@ -60,7 +60,10 @@ class App {
     private swordHoldingPositionAnimationL: AnimationGroup;
     private indicatingPoseLAnimation: AnimationGroup;
     private indicatingPoseRAnimation: AnimationGroup;
-
+    private kayakSound: Sound;
+    private boxerSound: Sound;
+    private walkSound: Sound;
+    private isWalking: boolean = false;
     private animationState: string = "neutral"; // état initial
     private map: AbstractMesh[];
     private teleportableShootingRange = true;
@@ -182,6 +185,11 @@ class App {
 
                 if ((Math.abs(x) > 0.1 || Math.abs(y) > 0.1) && this.canMove) {
                     this.movePlayer(x, y);
+                } else {
+                    if (this.isWalking) {
+                        this.walkSound.stop();
+                        this.isWalking = false;
+                    }
                 }
             }
 
@@ -223,7 +231,21 @@ class App {
 
         let direction = forward.scale(y).add(right.scale(x)).normalize(); // Calculer la direction de déplacement combinée
 
-        this._camera.position.addInPlace(direction.scale(speed)); // Appliquer le déplacement
+        // Si la direction n'est pas nulle, le joueur marche
+        if (direction.length() > 0.01) {
+            if (!this.isWalking) {
+                this.walkSound.play();
+                this.isWalking = true;
+            }
+        } else {
+            if (this.isWalking) {
+                this.walkSound.stop();
+                this.isWalking = false;
+            }
+        }
+
+        // Appliquer le déplacement
+        this._camera.position.addInPlace(direction.scale(speed));
     }
 
     // Méthode pour traiter la rotation de la caméra en fonction des entrées du contrôleur
@@ -347,8 +369,7 @@ class App {
 
 
     // Méthode pour créer une caméra statique en cas d'échec de WebXR
-    // Méthode pour créer une caméra statique en cas d'échec de WebXR
-    private createFallbackCamera(): void {
+    private async createFallbackCamera(): Promise<void> {
         const fallbackCamera = new UniversalCamera("fallbackCamera", new Vector3(0, 1.6, -10), this._scene);
         fallbackCamera.setTarget(new Vector3(0, 180, 0));
         this._scene.activeCamera = fallbackCamera;
@@ -359,7 +380,19 @@ class App {
         // Créer un texte UI pour afficher le message
         this._fallbackUI = AdvancedDynamicTexture.CreateFullscreenUI("UI");
         const message = new TextBlock();
-        message.text = "Athlete simulator est un jeu VR\n veuillez visiter ce site depuis votre casque VR.\nMerci !";
+
+        let vrSupported = false;
+
+        if (navigator.xr) {
+            vrSupported = await navigator.xr.isSessionSupported('immersive-vr');
+        }
+
+        if (vrSupported) {
+            message.text = "Cliquez sur le bouton \nen bas à droite \npour entrer dans le \nLab Zone.";
+        } else {
+            message.text = "Athlete simulator est un jeu VR\n veuillez visiter ce site depuis votre casque VR.\nMerci !";
+        }
+
         message.color = "black";
         message.fontSize = 75;
         message.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
@@ -1080,6 +1113,7 @@ class App {
         this.teleportableBoxing = false;
         this.teleportableRing = false;
         this.teleportableShootingRange = false;
+        this.kayakSound.play();
         this.map.forEach(mesh => mesh.setEnabled(false));
 
         await this._kayak.loadKayakModel();
@@ -1293,6 +1327,7 @@ class App {
         this.teleportableBoxing = false;
         this.teleportableRing = true;
         this.teleportableShootingRange = false;
+        this.boxerSound.play();
         this.map.forEach(mesh => mesh.setEnabled(false));
         this._boxing = new Boxing(this._scene, this._canvas, this._engine, this._camera);
         this.boxerMesh = this._scene.getMeshByName("boxer");
@@ -1372,16 +1407,23 @@ class App {
 
             this.map = allMeshes;
 
-            this._horrorAmbianceMusic = new Sound("horror", "sounds/horror.mp3", this._scene, null, {
+
+            this.kayakSound = new Sound("kayakSound", "sounds/kayak.mp3", this._scene, null, {
                 loop: true,
                 autoplay: false,
-                volume: 0.5
+                volume: 0.7
             });
 
-            this._fightAmbianceMusic = new Sound("fight", "sounds/fight.mp3", this._scene, null, {
+            this.boxerSound = new Sound("boxerSound", "sounds/boxer.mp3", this._scene, null, {
                 loop: true,
                 autoplay: false,
-                volume: 0.8
+                volume: 0.7
+            });
+
+            this.walkSound = new Sound("walkingSound", "sounds/walk.mp3", this._scene, null, {
+                loop: false,
+                autoplay: false,
+                volume: 1
             });
 
             // Sky material and mesh setup...
@@ -1479,6 +1521,16 @@ class App {
         this.teleportableBoxing = true;
         this.teleportableRing = true;
         this.teleportableShootingRange = true;
+        // Stop any currently playing music
+        if (this.kayakSound && this.kayakSound.isPlaying) {
+            this.kayakSound.stop();
+        }
+        if (this.boxerSound && this.boxerSound.isPlaying) {
+            this.boxerSound.stop();
+        }
+        if (this._gun.gunSound && this._gun.gunSound.isPlaying) {
+            this._gun.gunSound.stop();
+        }
         // Dispose the current map if any
         if (this.inShootingRange) {
             this._shootingRange.disposeRange();
